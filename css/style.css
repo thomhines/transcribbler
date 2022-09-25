@@ -118,23 +118,27 @@ header button.text:hover {
   justify-content: flex-end;
   min-height: 100%;
   padding: 30px;
+  font-size: 1rem;
 }
 .transcript_container .transcript > .timestamp {
   margin: 1em 0;
 }
 .transcript_container .timestamp {
-  font-size: 0.6rem;
+  display: inline-block;
+  overflow: hidden;
+  font-size: 0.6em;
   line-height: 1em;
   color: #999;
+}
+.transcript_container .timestamp:first-child {
+  width: 4.4em;
 }
 .transcript_container .record {
   line-height: 1.3em;
   margin: 0 0 0.3em;
 }
 .transcript_container .record .timestamp {
-  display: inline-block;
   width: 0;
-  overflow: hidden;
   transition: width 0.3s ease-in-out;
 }
 .show_timestamps .transcript_container .record .timestamp {
@@ -224,7 +228,8 @@ input[type=checkbox] {
   position: fixed;
   top: 50%;
   left: 50%;
-  max-width: 350px;
+  width: 500px;
+  max-width: 90vw;
   transform: translate(-50%, -50%);
   padding: 20px;
   background: #fff;

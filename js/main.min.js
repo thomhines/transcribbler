@@ -1,63 +1,33 @@
-
-
 if (!('webkitSpeechRecognition' in window)) {
 	alert('Web Speech API is not supported by this browser. Upgrade to Chrome v.25 or later.')
 }
-
-// $('.transcript').html('')
 
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
 var recording = false;
 var intentional_stop = false;
+var is_finished_phrase = 0
+var speech_heard = 0
+var last_timestamp = 0
+var last_phrase_timestamp = 0
 
+// recognition.interimResults = true;
 
-
-// let is_new_phrase = 1
-let is_finished_phrase = 0
-let speech_heard = 0
-let last_timestamp = 0
-let last_phrase_timestamp = 0
-// let ignore_onend = 0
 
 function runSpeechRecognition() {
-	// get output div reference
-	// var output = document.getElementById("output");
-	// // get action element reference
-	// var action = document.getElementById("action");
-	// new speech recognition object
-	// recognition.continuous = true;
-	recognition.interimResults = true;
+	
 	
 	last_timestamp = new Date()
 	last_phrase_timestamp = new Date()
 
 	recognition.onerror = function(e) {
-		// console.log(e);
-
 		if (e.error == 'no-speech') {
-		//   start_img.src = 'mic.gif';
-		//   showInfo('info_no_speech');
-			// ignore_onend = true;
 		}
 		if (e.error == 'audio-capture') {
-		//   start_img.src = 'mic.gif';
-		//   showInfo('info_no_microphone');
-		//   ignore_onend = true;
-			console.log('no mic')
 			alert('Check your browser to make sure that this site is allowed to use the mic.')
 		}
 		if (e.error == 'not-allowed') {
-			console.log('not allowed');
 			alert('Check your browser to make sure that this site is allowed to use the mic.')
-/*
-		  if (event.timeStamp - start_timestamp < 100) {
-			showInfo('info_blocked');
-		  } else {
-			showInfo('info_denied');
-		  }
-		  ignore_onend = true;
-*/
 		}
 	  };
 
@@ -66,8 +36,6 @@ function runSpeechRecognition() {
 		console.log('onstart')
 		recording = true
 		$('.toggle_recording').html('Recording...').addClass('recording')
-	// 	action.innerHTML = "<small>listening, please speak...</small>";
-		// is_new_phrase = 1
 		
 		if(speech_heard && is_finished_phrase) post_text(last_phrase)
 		is_finished_phrase = 0
@@ -77,17 +45,7 @@ function runSpeechRecognition() {
 
 	recognition.onspeechend = function() {
 		console.log('phrase end')
-		// action.innerHTML = "<small>stopped listening, hope you are done...</small>";
-		// 	recognition.stop();
-		// console.log(ignore_onend)
-		// if(is_new_phrase && !ignore_onend) post_text(last_phrase)
-		// last_phrase = ""
-		// is_new_phrase = 0
 		is_finished_phrase = 1
-		// ignore_onend = 1
-		
-		// Don't post if there was no onresult since last finished phrase
-
 	}
 
 
@@ -95,35 +53,18 @@ function runSpeechRecognition() {
 	recognition.onresult = function(e) {
 		
 		console.log('on result')
-		// if(last_phrase) console.log(last_phrase)
 		
 		speech_heard = 1
-		// ignore_onend = 0
 
 		for(x = 0; x < e.results.length; x++) {
 			last_phrase = e.results[x][0].transcript
-			// console.log(x, e.results[x][0].transcript)
 		}
 
-		// capitalize first letter
+		// Capitalize first letter
 		last_phrase = last_phrase.replace(/\S/, function(m) { return m.toUpperCase(); });
-
-		// if()
-		// $('.current_text').fadeOut().promise().then(function() {
-		// 	$('.current_text').html(last_phrase).show()
-		// })
 		
 		$('.current_text').html(last_phrase).show()
 
-		
-
-		
-
-
-		// var transcript = event.results[0][0].transcript;
-		// var confidence = event.results[0][0].confidence;
-		// output.innerHTML = "<b>Text:</b> " + transcript + "<br/> <b>Confidence:</b> " + confidence*100+"%";
-		// output.classList.remove("hide");
 	};
 
 	recognition.onend = function() {
@@ -133,13 +74,8 @@ function runSpeechRecognition() {
 			recognition.start();
 			return
 		}
-		
-
-
-
-		console.log('recording end')
 		recording = false
-		$('<div class="timestamp">'+ time() + ' - Recording ended</div>').appendTo('.transcript').hide().slideDown()
+		$('<div><span class="timestamp">'+ time() + '&nbsp;&nbsp; </span><span class="timestamp">Recording ended</span></div>').appendTo('.transcript').hide().slideDown()
 		$('.toggle_recording').html('Start recording').removeClass('recording')
 	}
 
@@ -160,17 +96,14 @@ function post_text(last_phrase) {
 		last_phrase_timestamp = new Date()
 		
 		$('.transcript').append('<div class="record" time="' + time() + '"></div>')
-		$('.record').last().hide().html('<span class="timestamp">' + time() + '&nbsp;&nbsp;</span> ' + $('.current_text').text())
+		$('.record').last().hide().html('<span class="timestamp">' + time() + '&nbsp;&nbsp; </span><span class="text">' + $('.current_text').text() + '</span>')
 		$('.record').last().slideDown()
 		$('.transcript_container').animate({scrollTop: $('.transcript').height() - $('.transcript_container').height() + 200}, 600);
 	}
-	
-
-	// $('.current_text').fadeOut().promise().then(function() {
-	// 	$('.current_text').html(last_phrase).show()
-	// })
 }
 
+
+// Convert current time to tidy format (eg. 12:34pm)
 function time() {
 	let time = new Date();
 	let hours = time.getHours()
@@ -187,20 +120,22 @@ function time() {
 
 }
 
-
+// Handle 'Record' button
 $('.toggle_recording').click(function() {
 
 	// Stop recording
 	if (recording) {
-		post_text("")
+		recording = 0
 		intentional_stop = true
 		recognition.stop();
 		return;
 	}
 
 	// Start recording
+	recording = 1
 	intentional_stop = false
-	$('<div class="timestamp">'+ time() + ' - Recording started</div>').appendTo('.transcript').hide().slideDown()
+	$('.current_text').text("")
+	$('<div><span class="timestamp">'+ time() + '&nbsp;&nbsp; </span><span class="timestamp">Recording started</span></div>').appendTo('.transcript').hide().slideDown()
 	$('.message').html('Begin speaking and your words will added to the transcript with each pause.')
 	setTimeout(function() {
 		$('.message').html('')
@@ -208,13 +143,13 @@ $('.toggle_recording').click(function() {
 	runSpeechRecognition()
 })
 
-
+// Allow 
 $('body').on('click', '.record', function() {
-	$(this).attr('contenteditable', true).focus()
+	$(this).find('.text').attr('contenteditable', true).focus()
 })
 
 $('body').on('click', '.blur', function() {
-	$(this).removeAttr('contenteditable')
+	$(this).find('.text').removeAttr('contenteditable')
 })
 
 $('body').on('keydown', '.record', function(e) {
@@ -253,11 +188,8 @@ $('.copy_transcript').click(function() {
 	$('.message').html('Transcript has been copied.')
 	$('.copy_transcript').html('Copied!')
 
-	// navigator.clipboard.writeText(cleaned_transcript);
 	window.getSelection().removeAllRanges();
-	// let
 	range = document.createRange();
-	// range.selectNode(typeof element === 'string' ? document.getElementById(element) : element);
 	range.selectNode(document.getElementsByClassName('transcript')[0])
 	window.getSelection().addRange(range);
 	document.execCommand('copy');
@@ -269,6 +201,13 @@ $('.copy_transcript').click(function() {
 	}, 3000)
 })
 
+
+$('.clear_transcript').click(function() {
+	if(confirm("Are you sure you want to clear all transcript records?")) {
+		$('.transcript').html("")
+	}
+})
+
 $('.show_about').click(function() {
 	$('.modal_mask').fadeIn(300)
 	$('.about').delay(200).fadeIn(300)
@@ -276,6 +215,13 @@ $('.show_about').click(function() {
 
 
 $('.show_settings').click(function() {
+	
+	if($('body').hasClass('show_timestamps')) $('.show_timestamps').prop('checked', true)
+	else $('.show_timestamps').prop('checked', false)
+	
+	if(recognition.interimResults) $('.show_realtime').prop('checked', true)
+	else $('.show_realtime').prop('checked', false)
+	
 	$('.modal_mask').fadeIn(300)
 	$('.settings').delay(200).fadeIn(300)
 })
@@ -286,11 +232,26 @@ $('.modal_mask, .modal .close').click(function() {
 
 $('.show_timestamps').click(function() {
 	$('body').toggleClass('show_timestamps')
+	localStorage.setItem('transcribbler_show_timestamps', $('body').hasClass('show_timestamps'));
 })
 
 $('.show_realtime').click(function() {
 	recognition.interimResults = !recognition.interimResults;
+	localStorage.setItem('transcribbler_show_realtime', recognition.interimResults);
 })
+
+
+
+// Load settings from localStorage
+if(localStorage.getItem('transcribbler_show_timestamps') && localStorage.getItem('transcribbler_show_timestamps') != "false") {
+	$('body').addClass('show_timestamps')
+}
+if(localStorage.getItem('transcribbler_show_realtime') && localStorage.getItem('transcribbler_show_realtime') != "false") {
+	recognition.interimResults = true
+}
+else {
+	recognition.interimResults = false
+}
 
 
 $('body').on('keydown', function(e) {
