@@ -1,0 +1,265 @@
+/*! https://hankchizljaw.com/wrote/a-modern-css-reset/ */
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+ol[class], ul[class] {
+  padding: 0;
+}
+
+blockquote, body, dd, dl, figcaption, figure, h1, h2, h3, h4, li, ol[class], p, ul[class] {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+ol[class], ul[class] {
+  list-style: none;
+}
+
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+article > * + * {
+  margin-top: 1em;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
+* {
+  /* ligatures & special OpenType features */
+  -moz-font-feature-settings: "liga=1, dlig=1";
+  -ms-font-feature-settings: "liga", "dlig";
+  -webkit-font-feature-settings: "liga", "dlig";
+  -o-font-feature-settings: "liga", "dlig";
+  font-feature-settings: "liga", "dlig";
+  /* adjust all font stacks to use same x-height */
+  font-size-adjust: auto;
+  /* enable kerning, ligatures and other typographic features */
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern";
+  -webkit-font-feature-settings: "kern";
+  -moz-font-feature-settings: "kern";
+  -moz-font-feature-settings: "kern=1";
+  font-kerning: normal;
+}
+
+html, body {
+  margin: 0;
+  font-family: Lato;
+  font-size: 18px;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  gap: 10px;
+  border-bottom: 1px solid #000;
+  background: #332;
+  color: #fff;
+}
+header div {
+  display: flex;
+  align-items: center;
+}
+header h1 {
+  margin: 0 1em 0 0;
+  font-size: 0.8rem;
+  border: 1px solid #fd6;
+  color: #fd6;
+  padding: 0.2em 0.7em;
+  border-radius: 0.4em;
+}
+header button {
+  margin: 0 0 0 1em;
+}
+header button.text {
+  color: #aaa;
+}
+header button.text:hover {
+  color: #fff;
+}
+.transcript_container {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+}
+.transcript_container .transcript {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+  padding: 30px;
+}
+.transcript_container .transcript > .timestamp {
+  margin: 1em 0;
+}
+.transcript_container .timestamp {
+  font-size: 0.6rem;
+  line-height: 1em;
+  color: #999;
+}
+.transcript_container .record {
+  line-height: 1.3em;
+  margin: 0 0 0.3em;
+}
+.transcript_container .record .timestamp {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease-in-out;
+}
+.show_timestamps .transcript_container .record .timestamp {
+  width: 4.4em;
+}
+
+.current_text_container {
+  min-height: 3.5em;
+  padding: 30px;
+  font-size: 1.5em;
+  border-top: 1px solid #aaa;
+  box-shadow: 0 -4px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+.message {
+  color: #fff;
+  font-size: 20px;
+}
+
+.top_right_buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+}
+
+button,
+.button {
+  display: block;
+  margin: 0 0 10px 10px;
+  padding: 0.5em 1.2em;
+  font-size: 0.8rem;
+  border: none;
+  background: #ccc;
+  border-radius: 5px;
+  user-select: none;
+  cursor: pointer;
+}
+button:hover,
+.button:hover {
+  background: #999;
+}
+button.text,
+.button.text {
+  padding: 0;
+  background: none;
+  text-decoration: underline;
+  color: #666;
+  cursor: pointer;
+}
+button.text:hover,
+.button.text:hover {
+  color: #000;
+}
+
+input[type=checkbox] {
+  display: inline-block;
+  margin: 0 0.5em 0 0;
+}
+
+.label {
+  user-select: none;
+}
+
+.toggle_recording {
+  background: #9fa;
+}
+.toggle_recording:hover {
+  background: #6d8;
+}
+.toggle_recording.recording {
+  background: #faa;
+}
+.toggle_recording.recording:hover {
+  background: #e88;
+}
+
+.post_text {
+  opacity: 0.1;
+}
+.post_text:hover {
+  opacity: 1;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 350px;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background: #fff;
+  color: #000;
+  border-radius: 4px;
+  z-index: 10;
+  display: none;
+}
+.modal h3 {
+  font-size: 0.7rem;
+  margin: 0 0 1em;
+  color: #888;
+}
+.modal label {
+  display: block;
+}
+.modal .close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 0.3em 0.8em;
+  font-size: 0.6rem;
+  background: #fff;
+  color: #999;
+}
+.modal .close:hover {
+  color: #000;
+}
+
+.modal_mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+}
