@@ -231,6 +231,14 @@ input[type="checkbox"] {
 		color: #888;
 	}
 	
+	p {
+		margin: 0 0 .8em;
+	}
+	
+	p:last-child {
+		margin: 0;
+	}
+	
 	label {
 		display: block;
 	}
